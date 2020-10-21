@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            vertical-align: top;
+        }
+
+        .box {
+            width: 300px;
+            height: 200px;
+            margin: 100px auto;
+            position: relative;
+            overflow: hidden;
+            background: pink;
+            /*background-size: 100%;*/
+        }
+
+        .box ul li {
+            float: left;
+        }
+
+        .box ul {
+            width: 1500px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            // 1. 获取元素
+            let ulBox = document.getElementsByTagName('ul')[0];
+
+            // 2. 设置定时器
+            // 定时器运行就开始,不需要停止
+             setInterval(
+                 function () {
+                     // 3. 获得当前位置
+                     let position = ulBox.offsetLeft;
+
+                     // 4. 每一步的步长
+                     // 因为固定往左边走,所以步长应该为负数
+                     let step = -5;
+
+                     // 5. 计算位移的距离
+                     position += step;
+
+                     // 6. 判断图片位移到了哪个位置
+                     if (position > -1200) {
+                         // 还没有到最小值,那么可以继续走
+                         ulBox.style.left = position + 'px';
+                     } else {
+                         // 已经比-1200还要小了,那么这个时候
+                         // 将图片瞬间移动到第一张的位置
+                         // 让这一切重头开始
+                         ulBox.style.left = '0px';
+                     }
+                 },20
+             )
+        }
+    </script>
+</head>
+<body>
+<div class="box" id="divBox">
+    <ul>
+        <li><img src="images/01.jpg" alt=""/></li>
+        <li><img src="images/02.jpg" alt=""/></li>
+        <li><img src="images/03.jpg" alt=""/></li>
+        <li><img src="images/04.jpg" alt=""/></li>
+        <li><img src="images/01.jpg" alt=""/></li>
+        <!--加一张替身图片(第一张)-->
+    </ul>
+</div>
+</body>
+</html>
+
+

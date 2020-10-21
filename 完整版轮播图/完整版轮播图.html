@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            border: 0;
+        }
+
+        .all {
+            width: 500px;
+            height: 200px;
+            padding: 7px;
+            border: 1px solid #ccc;
+            margin: 100px auto;
+            position: relative;
+        }
+
+        .screen {
+            width: 500px;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen li {
+            width: 500px;
+            height: 200px;
+            overflow: hidden;
+            float: left;
+        }
+
+        .screen ul {
+            position: absolute;
+            left: 0;
+            top: 0px;
+            width: 3000px;
+        }
+
+        .all ol {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            line-height: 20px;
+            text-align: center;
+        }
+
+        .all ol li {
+            float: left;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border: 1px solid #ccc;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .all ol li.current {
+            background: yellow;
+        }
+
+        #arr {
+            display: none;
+        }
+
+        #arr span {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            margin-top: -20px;
+            background: #000;
+            cursor: pointer;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            font-family: '黑体';
+            font-size: 30px;
+            color: #fff;
+            opacity: 0.6;
+            border: 1px solid #fff;
+        }
+
+        #arr #right {
+            right: 5px;
+            left: auto;
+        }
+    </style>
+    <script src="../animation.js"></script>
+    <script>
+        window.onload = function () {
+            // 1. 获取元素
+            let box = document.getElementById('box');
+            let arrow = document.getElementById('arr');
+            let next = document.getElementById('right');
+            let pre = document.getElementById('left');
+            let ulBox = document.getElementsByTagName('ul')[0];
+            let moveWidth = document.getElementsByClassName('screen')[0].offsetWidth;
+            let liArr = ulBox.children;
+            let olBox = document.getElementsByTagName('ol')[0];
+
+            // 添加数字按钮
+            // 给数字按钮设置点击事件
+            // 给box设置鼠标移入事件
+            // 给箭头设置点击事件
+            // 数字按钮与箭头按钮的联动
+            // 自动轮播功能
+
+            // 2. 给ol盒子添加数字按钮--li
+            // 根据图片的数量来创建数字按钮
+            for(let i = 0;i < liArr.length;i++) {
+                let newBox = document.createElement('li');
+                // 3. 给第一个数字按钮设置背景颜色
+                if(i == 0) {
+                    newBox.setAttribute('class','current');
+                }
+                newBox.innerText = i + 1;
+                olBox.appendChild(newBox);
+            }
+
+            // 4. 给每个数字按钮设置点击事件
+            let numArr = olBox.children;
+            for(let i = 0;i < numArr.length;i++) {
+                // 5. 给按钮设置索引
+                numArr[i].setAttribute('numIndex',i);
+                // 6. 设置点击事件
+                numArr[i].onclick = function () {
+                    // 7. 颜色排他
+                    for(let j = 0;j < numArr.length;j++) {
+                        numArr[j].removeAttribute('class');
+                    }
+                    // 8. 设置当前按钮的背景颜色
+                    this.setAttribute('class','current');
+                    // 9. 计算位移的距离
+                    let target = -this.getAttribute('numIndex') * moveWidth;
+                    // 10. 调用动画函数
+                    moveAnimation(ulBox,target);
+
+                    // 24. 当点击的时候,告诉箭头按钮我对应的图片
+                    // 同比两个index
+                    arrowIndex = this.getAttribute('numIndex');
+                }
+            }
+
+            // 11. 给box设置鼠标移入移出事件
+            box.onmouseover = function () {
+                arrow.style.display = 'block';
+
+                // 26. 停止定时器
+                clearInterval(timeID);
+            }
+            box.onmouseout = function () {
+                arrow.style.display = 'none';
+
+                // 27. 重新设置定时器
+                timeID = setInterval(nextClick,1500);
+            }
+
+            // 12. 给右箭头设置点击事件
+            let arrowIndex = 0;
+
+            // 13. 克隆第一张图片,追加到最后位置
+            // 深克隆===包含里面所有的内容
+            ulBox.appendChild(liArr[0].cloneNode(true));
+
+            // 14. 右箭头点击事件
+            next.onclick = nextClick;
+            function nextClick() {
+                if (arrowIndex == 5) {
+                    // 如果arrowIndex等于5,那么就代表已经到最后一张了
+                    // 也就是已经到了我们的替身图片
+                    // 应该立刻把索引改成0,同时将位置直接写死到0px的位置
+                    arrowIndex = 0;
+                    ulBox.style.left = '0px';
+                    // 闪现回到第0张的位置
+                }
+                arrowIndex++;
+
+                // 15. 计算位移距离
+                let target = -arrowIndex * moveWidth;
+                // 16. 调用动画函数
+                moveAnimation(ulBox,target);
+
+                // 22. 给对应的数字设置背景颜色
+                // 颜色排他
+                for(let i = 0;i < numArr.length;i++) {
+                    numArr[i].removeAttribute('class');
+                }
+                // 23. arrowIndex的最大值===5
+                //     numIndex的最大值=====4
+                if (arrowIndex < 5) {
+                    numArr[arrowIndex].setAttribute('class','current');
+                } else {
+                    // 此时arrowIndex等于5,那就代表已经处于替身图片
+                    // 对于用户来讲,替身图片就是第一张图片
+                    numArr[0].setAttribute('class','current');
+                }
+
+            }
+
+            // 17. 给左箭头设置点击事件
+            pre.onclick = function () {
+                if (arrowIndex == 0) {
+                    // 如果arrowIndex等于0,那就代表现在处于第1张
+                    // 需要立刻闪现到替身图片
+                    arrowIndex = 5;
+                    ulBox.style.left = -arrowIndex * moveWidth + 'px';
+                }
+
+                arrowIndex--;
+                // 18. 计算位移的距离
+                let target = -arrowIndex * moveWidth;
+                // 19. 调用动画函数
+                moveAnimation(ulBox,target);
+
+                // 20. 设置对应的数字按钮颜色
+                // 颜色排他
+                for(let i = 0;i < numArr.length;i++) {
+                    numArr[i].removeAttribute('class');
+                }
+
+                // 21. 将对应的数字按钮颜色设置上
+                numArr[arrowIndex].setAttribute('class','current');
+            }
+
+            // 25. 设置自动轮播图
+            // 这里超级简单超级简单
+            // 每隔一段事件,调用一次右箭头点击事件即可
+            let timeID;
+            timeID = setInterval(nextClick,1500);
+
+        }
+    </script>
+</head>
+<body>
+<div class="all" id='box'>
+    <div class="screen">
+        <ul>
+            <li><img src="images/1.jpg" width="500" height="200"/></li>
+            <li><img src="images/2.jpg" width="500" height="200"/></li>
+            <li><img src="images/3.jpg" width="500" height="200"/></li>
+            <li><img src="images/4.jpg" width="500" height="200"/></li>
+            <li><img src="images/5.jpg" width="500" height="200"/></li>
+
+            <!-- 如果要实现无缝轮播,要使用js来添加一张替身图片 -->
+        </ul>
+        <ol>
+            <!-- 动态创建的小方块，添加在这里，样式已经给写好了-->
+        </ol>
+    </div>
+    <div id="arr">
+        <span id="left">&lt;</span>
+        <span id="right">&gt;</span>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body,
+        ul,
+        ol,
+        li,
+        img {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #box {
+            width: 490px;
+            height: 270px;
+            padding: 5px;
+            position: relative;
+            border: 1px solid #ccc;
+            margin: 100px auto 0;
+        }
+
+        .ad {
+            width: 490px;
+            height: 270px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #box img {
+            width: 490px;
+        }
+
+        .ad ol {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        .ad ol li {
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            border: 1px solid #ccc;
+            text-align: center;
+            background: #fff;
+            float: left;
+            margin-right: 10px;
+            cursor: pointer;
+            _display: inline;
+        }
+
+        .ad ol li.current {
+            background: yellow;
+        }
+
+        .ad ul li {
+            float: left;
+        }
+
+        .ad ul {
+            position: absolute;
+            top: 0;
+            width: 2940px;
+        }
+
+        .ad ul li.current {
+            display: block;
+        }
+
+        #arr {
+            display: none;
+        }
+
+        #arr span {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            margin-top: -20px;
+            background: #000;
+            cursor: pointer;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            font-family: '黑体';
+            font-size: 30px;
+            color: #fff;
+            opacity: 0.3;
+            border: 1px solid #fff;
+        }
+
+        #arr #right {
+            right: 5px;
+            left: auto;
+        }
+
+        .square {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+        }
+
+        .square span {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #c0c6ff;
+            text-align: center;
+            line-height: 20px;
+            cursor: pointer;
+        }
+
+        .square span.current {
+            background-color: orangered;
+            color: #fff;
+        }
+    </style>
+    <script src="../animation.js"></script>
+    <script>
+        window.onload = function () {
+            // 1. 获取元素
+            let box =  document.getElementById('box');// 主体盒子
+            let ulBox = document.getElementById('imgs');// 位移元素ul盒子
+            let arrow = document.getElementById('arr');// 保存箭头的大盒子
+            let next = document.getElementById('right');// 下一张箭头
+            let pre = document.getElementById('left');// 上一张箭头
+            let spanArr = document.getElementsByClassName('square')[0].children; // 数字按钮集合
+            let moveWidth = document.getElementsByClassName('ad')[0].offsetWidth;// 位移单位距离
+
+            // 鼠标移入箭头出现功能
+            // 左右箭头点击功能
+            // 下方数字按钮点击功能
+            // 左右箭头与数字按钮联动功能
+
+            // 2. 给box设置点击事件
+            box.onmouseover = function () {
+                arrow.style.display = 'block';
+            }
+            box.onmouseout = function () {
+                arrow.style.display = 'none';
+            }
+
+            // 3. 给右箭头按钮设置点击事件
+            // 声明一个变量来存储点击次数
+            let arrIndex = 0;
+            next.onclick = function () {
+                // 4. 限制最大点击次数: 4
+                if (arrIndex < 4) {
+                    arrIndex++;
+                }
+                // 5. 计算位移的距离
+                let target = -arrIndex * moveWidth;
+                // 6. 调用动画函数
+                moveAnimation(ulBox,target);
+
+                // 17. 当点击右箭头的时候,也要处理下面的数字按钮
+                // 颜色排他
+                for(let i = 0;i < spanArr.length;i++) {
+                    spanArr[i].removeAttribute('class');
+                }
+                // 把对应数字的背景颜色设置好
+                spanArr[arrIndex].setAttribute('class','current');
+            }
+
+            // 7. 给左箭头设置点击事件
+            pre.onclick = function () {
+                // 8. 限制最小点击次数:0
+                if (arrIndex > 0) {
+                    arrIndex--;
+                }
+                let target = -arrIndex * moveWidth;
+                moveAnimation(ulBox,target);
+
+                // 18. 颜色排他
+                for(let i = 0;i < spanArr.length;i++) {
+                    spanArr[i].removeAttribute('class');
+                }
+                // 把对应数字的背景颜色设置好
+                spanArr[arrIndex].setAttribute('class','current');
+            }
+
+            // 9. 循环给所有数字按钮设置点击事件
+            for(let i = 0;i < spanArr.length;i++) {
+                // 10. 先设置索引,才知道我们点击了哪个按钮
+                spanArr[i].setAttribute('numIndex',i);
+
+                // 11. 设置点击事件
+                spanArr[i].onclick = function () {
+                    // 12. 颜色排他
+                    for(let j = 0;j < spanArr.length;j++) {
+                        spanArr[j].removeAttribute('class');
+                    }
+                    // 13. 再设置当前盒子的背景颜色
+                    this.setAttribute('class','current');
+
+                    // 14. 计算位移的距离
+                    let target = -this.getAttribute('numIndex') * moveWidth;
+
+                    // 15. 调用动画函数
+                    moveAnimation(ulBox,target);
+
+                    // 16. 当数字按钮点击的时候,要把当前的数值告诉箭头按钮
+                    // 让两个index值同步即可
+                    arrIndex = this.getAttribute('numIndex');
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="box" class="all">
+        <div class="ad">
+            <ul id="imgs">
+                <li><img src="images/1.jpg" /></li>
+                <li><img src="images/2.jpg" /></li>
+                <li><img src="images/3.jpg" /></li>
+                <li><img src="images/4.jpg" /></li>
+                <li><img src="images/5.jpg" /></li>
+            </ul>
+            <div class="square">
+                <span class="current">1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+                <span>5</span>
+            </div>
+        </div>
+
+        <div id="arr">
+            <span id="left">&lt;</span>
+            <span id="right">&gt;</span>
+        </div>
+    </div>
+
+</body>
+
+</html>
+    

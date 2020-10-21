@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #box {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            position: absolute;
+            left: 10px;
+            top: 50px;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            // 1. 获取元素
+            let t400 = document.getElementById('to400');
+            let t800 = document.getElementById('to800');
+            let box = document.getElementById('box');
+
+            // 2. 给按钮设置点击事件
+            t400.onclick = function () {
+                // 调用动画函数
+                moveAnimation(box,400);
+            }
+            t800.onclick = function () {
+                // 调用动画函数
+                moveAnimation(box,800);
+            }
+
+            // 3. 封装动画函数代码
+            // 传入位移元素以及位移目标
+            function moveAnimation(elm,target) {
+                
+                // 4. 清空定时器
+                clearInterval(elm.timeID);
+
+                // 5. 获得元素原本的位置: offsetLeft
+                let position = elm.offsetLeft;
+
+                // 6. 设置步长,是继续往前,还是往回走
+                // 如何判断正反方向
+                // (target - position) > 0 ,还没到达目标,正方向----正数
+                // (target - position) < 0 ,已经超过目标,反方向----负数
+                // 利用三元表达式
+                let step = (target - position) > 0 ? 10 : -10;
+
+
+                // 7. 设置定时器
+                elm.timeID = setInterval(
+                    function () {
+                        // 8. 修改位移的距离
+                        position += step;
+                        // 9. 判断是否已经到终点
+                        // 判断位移元素是否要继续位移
+                        // 剩余的距离是否大于步长
+                        // 如果剩余距离大于步长,继续走
+                        // 如果剩余距离小于步长,直接写死,然后停止
+                        // 剩余距离 = 目标位置 - 当前位置
+                        // 不管是步长还是剩余距离,在现实中必须是正数
+                        if (Math.abs(target - position) > Math.abs(step)) {
+                            // 恭喜你,你还要继续走
+                            elm.style.left = position + 'px';
+                        } else {
+                            // 恭喜你已经要到达目标位置了,麻烦直接写死然后停止
+                            elm.style.left = target + 'px';
+                            clearInterval(elm.timeID);
+                        }
+                    },20
+                )
+
+            }
+
+        }
+    </script>
+</head>
+
+<body>
+    <input type="button" id="to400" value="到400">
+    <input type="button" id="to800" value="到800">
+    <div id="box"></div>
+</body>
+
+</html>
+
+
+<script>
+    window.onload = function () {
+        // 1. 获取元素
+        let t400 = document.getElementById('to400');
+        let t800 = document.getElementById('to800');
+        let box = document.getElementById('box');
+
+        // 2. 给按钮设置点击事件
+        t400.onclick = function () {
+            // 调用动画函数
+            moveAnimation(box,400);
+        }
+        t800.onclick = function () {
+            // 调用动画函数
+            moveAnimation(box,800);
+        }
+
+        // 3. 封装动画函数代码
+        // 传入位移元素以及位移目标
+        function moveAnimation(elm,target) {
+            
+            // 4. 清空定时器
+            clearInterval(elm.timeID);
+
+            // 5. 获得元素原本的位置: offsetLeft
+            let position = elm.offsetLeft;
+
+            // 6. 设置步长,是继续往前,还是往回走
+            // 如何判断正反方向
+            // (target - position) > 0 ,还没到达目标,正方向----正数
+            // (target - position) < 0 ,已经超过目标,反方向----负数
+            // 利用三元表达式
+            let step = (target - position) > 0 ? 10 : -10;
+
+
+            // 7. 设置定时器
+            elm.timeID = setInterval(
+                function () {
+                    // 8. 修改位移的距离
+                    position += step;
+                    // 9. 判断是否已经到终点
+                    // 判断位移元素是否要继续位移
+                    // 剩余的距离是否大于步长
+                    // 如果剩余距离大于步长,继续走
+                    // 如果剩余距离小于步长,直接写死,然后停止
+                    // 剩余距离 = 目标位置 - 当前位置
+                    // 不管是步长还是剩余距离,在现实中必须是正数
+                    if (Math.abs(target - position) > Math.abs(step)) {
+                        // 恭喜你,你还要继续走
+                        elm.style.left = position + 'px';
+                    } else {
+                        // 恭喜你已经要到达目标位置了,麻烦直接写死然后停止
+                        elm.style.left = target + 'px';
+                        clearInterval(elm.timeID);
+                    }
+                },20
+            )
+
+        }
+
+    }
+</script>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        ul {
+            list-style: none
+        }
+
+        img {
+            vertical-align: top
+        }
+
+        .box {
+            width: 490px;
+            height: 170px;
+            margin: 100px auto;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .inner {
+            width: 490px;
+            height: 170px;
+            background-color: pink;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .inner ul {
+            width: 1000%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .inner li {
+            float: left;
+        }
+
+        .square {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        .square span {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: #fff;
+            text-align: center;
+            line-height: 16px;
+            cursor: pointer;
+        }
+
+        .square span.current {
+            background-color: orangered;
+            color: #fff;
+        }
+
+    </style>
+    <script src="../animation.js"></script>
+    <script>
+        window.onload = function () {
+            // 利用动画函数实现轮播图
+            // 参数: 位移元素ul-----目标位置:index * 单位长度
+
+            // 1. 获取相应的元素
+            let ulBox = document.getElementsByTagName('ul')[0];// 位移元素
+            let spanBtns = document.getElementsByTagName('span');// 点击按钮数组
+            let moveWidth = document.getElementsByClassName('inner')[0].offsetWidth;// 位移的单位长度
+            
+
+            // 2. 循环设置span按钮的点击事件,调用动画函数
+            for(let i = 0;i < spanBtns.length;i++) {
+                
+                // 3. 点击的时候,要确定你点击的是第几个按钮
+                // 设置一个索引值
+                spanBtns[i].setAttribute('index',i);
+                // 点击不同的按钮的时候,要位移的图片数目不同
+
+                // 4. 设置点击事件
+                spanBtns[i].onclick = function () {
+
+                    // 6. 排他处理
+                    for(let j = 0;j < spanBtns.length;j++) {
+                        spanBtns[j].removeAttribute('class');
+                    }
+                    // 5. 修改按钮的背景颜色
+                    this.setAttribute('class','current');
+
+                    // 7. 计算位移的目标
+                    // 单击按钮不同,位移目标也不同
+                    // index * moveWidth
+                    let target = -this.getAttribute('index') * moveWidth;
+                    // 因为ul整体是往左边位移的,所以left值必须是负数
+                    console.log(target);
+
+                    // 8. 调用动画函数
+                    moveAnimation(ulBox,target);
+
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="box" id="box">
+    <div class="inner">
+        <ul>
+            <li><a href="#"><img src="images/01.jpg" alt=""/></a></li>
+            <li><a href="#"><img src="images/02.jpg" alt=""/></a></li>
+            <li><a href="#"><img src="images/03.jpg" alt=""/></a></li>
+            <li><a href="#"><img src="images/04.jpg" alt=""/></a></li>
+            <li><a href="#"><img src="images/05.jpg" alt=""/></a></li>
+        </ul>
+        <div class="square">
+            <span class="current">1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span>
+        </div>
+    </div>
+</div>
+</body>

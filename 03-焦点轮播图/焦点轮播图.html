@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body, ul, ol, li, img {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #box {
+            width: 490px;
+            height: 270px;
+            padding: 5px;
+            position: relative;
+            border: 1px solid #ccc;
+            margin: 100px auto 0;
+        }
+
+        .ad {
+            width: 490px;
+            height: 270px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #box img {
+            width: 490px;
+        }
+
+        .ad ol {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        .ad ol li {
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            border: 1px solid #ccc;
+            text-align: center;
+            background: #fff;
+            float: left;
+            margin-right: 10px;
+            cursor: pointer;
+            _display: inline;
+        }
+
+        .ad ol li.current {
+            background: yellow;
+        }
+
+        .ad ul li {
+            float: left;
+        }
+
+        .ad ul {
+            position: absolute;
+            top: 0;
+            width: 2940px;
+        }
+
+        .ad ul li.current {
+            display: block;
+        }
+
+        #arr {
+            display: none;
+        }
+
+        #arr span {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            margin-top: -20px;
+            background: #000;
+            cursor: pointer;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            font-family: '黑体';
+            font-size: 30px;
+            color: #fff;
+            opacity: 0.3;
+            border: 1px solid #fff;
+        }
+
+        #arr #right {
+            right: 5px;
+            left: auto;
+        }
+    </style>
+    <script src="../animation.js"></script>
+    <script>
+        window.onload = function () {
+            // 1. 获取相应元素
+            let box = document.getElementById('box');// 主体盒子
+            let ulBox = document.getElementById('imgs');// 位移元素
+            let next = document.getElementById('right');// 下一个按钮
+            let pre = document.getElementById('left');// 上一个按钮
+            let arrow = document.getElementById('arr');// 存放箭头的大盒子
+            let moveWidth = document.getElementsByClassName('ad')[0].offsetWidth;// 位移单位长度
+
+            // 2. 设置box的移入移出事件,让箭头显示或隐藏
+            box.onmouseover = function () {
+                arrow.style.display = 'block';
+            }
+            box.onmouseout = function () {
+                arrow.style.display = 'none';
+            }
+
+            // 3. 给右箭头设置点击事件
+            // 声明一个变量,来保存用户点击的次数
+            let clickCount = 0;
+            next.onclick = function () {
+                // 4. 控制用户点击的最大次数
+                //最多只能是4
+                if (clickCount < 4) {
+                    clickCount++;
+                }
+                // 5. 计算位移的距离
+                let target = -clickCount * moveWidth;
+                // 注意: 因为ul整体往左边走,所以是负数
+                // 6. 调用动画函数
+                moveAnimation(ulBox,target);
+            }
+            // 7. 给左箭头设置点击事件
+            pre.onclick = function () {
+                // 8. 控制按钮的最小点击数===0
+                if (clickCount > 0) {
+                    clickCount--;
+                }
+                // 9. 计算位移距离
+                let target = -clickCount * moveWidth;
+                // 10. 调用动画函数
+                moveAnimation(ulBox,target);
+                
+            }
+
+        }
+    </script>
+    
+</head>
+<body>
+<div id="box" class="all">
+    <div class="ad">
+        <ul id="imgs">
+            <li><img src="images/1.jpg"/></li>
+            <li><img src="images/2.jpg"/></li>
+            <li><img src="images/3.jpg"/></li>
+            <li><img src="images/4.jpg"/></li>
+            <li><img src="images/5.jpg"/></li>
+        </ul>
+    </div>
+
+    <div id="arr"><span id="left">&lt;</span><span id="right">&gt;</span></div>
+</div>
+
+</body>
+</html>
